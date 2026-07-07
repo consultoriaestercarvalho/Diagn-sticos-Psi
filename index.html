@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Alicerce Psi — Estrutura digital para psicólogos</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon-256.png" sizes="256x256">
+<link rel="apple-touch-icon" href="favicon-256.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:#F5F1EB;font-size:16px}
+body{background:#F5F1EB;color:#3A3A3A;font-family:'Inter',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+a{text-decoration:none}
+
+/* ── BRAND TOKENS ── */
+:root{
+  --musgo:#2F3B2A;
+  --petroleo:#1F3B4D;
+  --areia:#C9A77C;
+  --creme:#F5F1EB;
+  --cinza:#3A3A3A;
+  --cinza-claro:#8a8680;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Inter',sans-serif;
+}
+
+/* ── PAGES ── */
+.page{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity .65s cubic-bezier(.4,0,.2,1);overflow-y:auto;overflow-x:hidden}
+.page.active{opacity:1;pointer-events:all}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.5rem 4rem;
+  background:rgba(245,241,235,.93);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(47,59,42,.08);
+  transition:border-color .3s;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:.9rem;
+  cursor:pointer;
+}
+.nav-logo svg{width:38px;height:30px;flex-shrink:0}
+.nav-logo-text{
+  display:flex;flex-direction:column;gap:0;
+}
+.nav-logo-name{
+  font-family:var(--serif);font-size:1.05rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--musgo);line-height:1;
+}
+.nav-logo-sub{
+  font-size:.54rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--areia);font-weight:400;margin-top:3px;
+}
+.nav-links{list-style:none;display:flex;gap:2.5rem;align-items:center}
+.nav-links button{
+  background:none;border:none;
+  font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cinza);font-weight:400;
+  opacity:.55;transition:opacity .2s;padding:0;
+}
+.nav-links button:hover,.nav-links button.active{opacity:1}
+.nav-links button.active{color:var(--musgo)}
+.nav-cta{
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  background:var(--musgo);color:var(--creme);
+  border:none;padding:.7rem 1.6rem;
+  font-weight:400;transition:background .25s;
+}
+.nav-cta:hover{background:var(--petroleo)}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:0;z-index:400}
+.hamburger span{display:block;width:22px;height:1px;background:var(--musgo);transition:transform .3s,opacity .3s}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mobile-menu{
+  display:none;position:fixed;inset:0;z-index:350;background:var(--creme);
+  flex-direction:column;justify-content:center;align-items:center;gap:clamp(1rem,4vh,2.8rem);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+  overflow-y:auto;padding:6rem 1.5rem 2rem;
+}
+.mobile-menu.open{opacity:1;pointer-events:all}
+.mobile-menu button{
+  font-family:var(--serif);font-size:clamp(1.7rem,7vh,2.8rem);font-weight:400;
+  text-transform:uppercase;letter-spacing:.08em;
+  background:none;border:none;color:var(--musgo);opacity:.4;transition:opacity .2s;
+  flex-shrink:0;
+}
+.mobile-menu button.active,.mobile-menu button:hover{opacity:1}
+
+/* PAGE DOTS */
+.page-dots{
+  position:fixed;right:2.2rem;top:50%;transform:translateY(-50%);
+  z-index:290;display:flex;flex-direction:column;gap:.7rem;
+}
+.dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(47,59,42,.25);cursor:pointer;
+  transition:background .3s,transform .3s;border:none;padding:0;
+}
+.dot.active{background:var(--musgo);transform:scale(1.5)}
+
+/* PAGE TRANSITION OVERLAY */
+.overlay{
+  position:fixed;inset:0;z-index:500;pointer-events:none;
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+}
+.overlay-col{
+  background:var(--musgo);transform:scaleY(0);transform-origin:top;
+  transition:transform .55s cubic-bezier(.76,0,.24,1);
+}
+.overlay-col:nth-child(2){transition-delay:.06s}
+.overlay-col:nth-child(3){transition-delay:.12s}
+.overlay.in .overlay-col{transform:scaleY(1)}
+.overlay.out .overlay-col{transform-origin:bottom;transform:scaleY(0)}
+
+/* ── PAGE 1: HOME ── */
+#p-home{background:var(--creme)}
+.home-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;grid-template-columns:55% 45%;
+}
+.home-left{
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:8rem 4rem 4rem;
+}
+.home-tag{
+  font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--areia);margin-bottom:1.8rem;font-weight:500;
+}
+.home-title{
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(3rem,6.5vw,6rem);
+  line-height:1.05;letter-spacing:-.01em;
+  color:var(--musgo);margin-bottom:1.4rem;
+}
+.home-title em{font-style:italic;font-weight:300;color:var(--petroleo)}
+.home-rule{width:48px;height:2px;background:var(--areia);margin-bottom:1.6rem}
+.home-sub{
+  font-size:.88rem;line-height:1.85;color:var(--cinza);
+  max-width:420px;margin-bottom:3rem;font-weight:300;
+}
+.home-actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.btn-primary{
+  background:var(--musgo);color:var(--creme);
+  padding:.95rem 2.2rem;border:none;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:400;transition:background .25s;
+}
+.btn-primary:hover{background:var(--petroleo)}
+.btn-ghost{
+  background:none;border:1px solid rgba(47,59,42,.3);
+  color:var(--musgo);
+  padding:.95rem 2.2rem;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:400;transition:border-color .25s,color .25s;
+}
+.btn-ghost:hover{border-color:var(--musgo)}
+
+.home-right{
+  position:relative;overflow:hidden;
+  background:var(--musgo);
+}
+.home-right-inner{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:3rem;
+  text-align:center;
+}
+/* The A monogram — big, architectural, as signature */
+.mono-a{
+  width:200px;height:180px;
+  margin-bottom:2.5rem;
+  opacity:.18;
+}
+.home-right-quote{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:300;
+  color:var(--creme);line-height:1.5;
+  max-width:300px;
+  position:relative;z-index:1;
+  opacity:.9;
+}
+.home-right-attr{
+  margin-top:1.2rem;font-size:.6rem;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(201,167,124,.7);
+  position:relative;z-index:1;
+}
+/* ── PAGE 2: SERVIÇOS ── */
+#p-servicos{background:var(--creme)}
+.servicos-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  padding:8rem 4rem 4rem;
+}
+.sec-eyebrow{
+  font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--areia);margin-bottom:.9rem;font-weight:500;
+}
+.sec-title{
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(2.4rem,5vw,4.5rem);
+  line-height:1.05;color:var(--musgo);
+  margin-bottom:1rem;letter-spacing:-.01em;
+}
+.sec-title em{font-style:italic;font-weight:300;color:var(--petroleo)}
+.sec-rule{width:40px;height:2px;background:var(--areia);margin-bottom:3.5rem}
+
+.servicos-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1.5px;
+  background:rgba(47,59,42,.08);
+  margin-bottom:3.5rem;
+}
+.servico-card{
+  background:var(--creme);padding:2.8rem 2.4rem;
+  position:relative;overflow:hidden;
+  transition:background .3s;
+  cursor:default;
+}
+.servico-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--areia);transform:scaleY(0);transform-origin:bottom;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.servico-card:hover{background:#eee9e2}
+.servico-card:hover::before{transform:scaleY(1)}
+
+.servico-num{
+  font-family:var(--serif);font-size:2.8rem;font-weight:300;
+  color:rgba(47,59,42,.12);line-height:1;margin-bottom:1.4rem;
+}
+.servico-title{
+  font-family:var(--serif);font-size:1.7rem;font-weight:500;
+  color:var(--musgo);text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:.9rem;line-height:1.1;
+}
+.servico-desc{font-size:.8rem;color:#555;line-height:1.85;margin-bottom:1.4rem}
+.servico-items{list-style:none}
+.servico-items li{
+  font-size:.74rem;color:#666;padding:.4rem 0;
+  border-bottom:1px solid rgba(47,59,42,.07);
+  display:flex;align-items:baseline;gap:.7rem;line-height:1.5;
+}
+.servico-items li::before{content:'—';color:var(--areia);font-size:.7rem;flex-shrink:0}
+
+.servicos-note{
+  max-width:560px;
+  font-size:.78rem;color:var(--cinza-claro);
+  line-height:1.8;
+  padding-top:2rem;
+  border-top:1px solid rgba(47,59,42,.1);
+}
+
+/* ── PAGE 3: SOBRE ── */
+#p-sobre{background:var(--musgo)}
+.sobre-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.sobre-left{
+  background:var(--petroleo);
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:8rem 3.5rem 4rem;
+  position:relative;
+  overflow:hidden;
+}
+.sobre-bg-a{
+  position:absolute;right:-40px;bottom:-20px;
+  width:280px;opacity:.07;
+}
+.sobre-tag{
+  font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(201,167,124,.7);margin-bottom:1.4rem;font-weight:500;
+}
+.sobre-title{
+  font-family:var(--serif);font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:500;color:var(--creme);
+  line-height:1.05;letter-spacing:-.01em;
+  margin-bottom:1.2rem;
+}
+.sobre-title em{font-style:italic;font-weight:300;color:var(--areia)}
+.sobre-rule{width:40px;height:2px;background:var(--areia);margin-bottom:2rem}
+.sobre-desc p{
+  font-size:.84rem;line-height:1.9;
+  color:rgba(245,241,235,.75);margin-bottom:1.2rem;font-weight:300;
+}
+.sobre-desc p:first-child{
+  font-family:var(--serif);font-size:1.1rem;
+  color:rgba(245,241,235,.9);line-height:1.6;font-weight:300;
+}
+.sobre-values{
+  margin-top:2rem;display:flex;gap:1.5rem;flex-wrap:wrap;
+}
+.sobre-value{
+  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--areia);padding:.4rem 1rem;
+  border:1px solid rgba(201,167,124,.35);
+}
+
+.sobre-right{
+  background:#2a3526;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:8rem 3.5rem;
+}
+.sobre-missao{
+  font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(201,167,124,.6);margin-bottom:2rem;font-weight:500;
+}
+.sobre-quote{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;
+  color:var(--creme);line-height:1.45;
+  margin-bottom:3rem;position:relative;padding-left:1.5rem;
+}
+.sobre-quote::before{
+  content:'';position:absolute;left:0;top:.3rem;bottom:.3rem;
+  width:2px;background:var(--areia);
+}
+.sobre-lista{list-style:none;display:flex;flex-direction:column;gap:1.4rem}
+.sobre-lista li{
+  display:flex;align-items:flex-start;gap:1rem;
+  font-size:.78rem;color:rgba(245,241,235,.65);line-height:1.7;
+}
+.sobre-lista li .ico{
+  width:28px;height:28px;flex-shrink:0;margin-top:.1rem;
+  border:1px solid rgba(201,167,124,.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.sobre-lista li .ico svg{width:13px;height:13px;stroke:var(--areia)}
+
+/* ── PAGE 4: PROCESSO ── */
+#p-processo{background:var(--creme)}
+.processo-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  padding:8rem 4rem 4rem;
+}
+.processo-intro{
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+  margin-bottom:5rem;align-items:end;
+}
+.processo-intro-right{
+  font-size:.85rem;color:#555;line-height:1.9;
+}
+.processo-steps{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-top:1px solid rgba(47,59,42,.12);
+  margin-bottom:4.5rem;
+}
+.pstep{
+  padding:2.2rem 1.6rem;
+  border-right:1px solid rgba(47,59,42,.08);
+  transition:background .25s;
+  position:relative;
+}
+.pstep:last-child{border-right:none}
+.pstep::after{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:var(--areia);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
+}
+.pstep:hover{background:#eee9e2}
+.pstep:hover::after{transform:scaleX(1)}
+.pstep-num{
+  font-family:var(--serif);font-size:2.2rem;font-weight:300;
+  color:rgba(47,59,42,.15);line-height:1;margin-bottom:1rem;
+}
+.pstep-name{
+  font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--musgo);font-weight:500;margin-bottom:.7rem;
+}
+.pstep-desc{font-size:.7rem;color:#666;line-height:1.7}
+
+.processo-cta-block{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:3rem;background:var(--musgo);flex-wrap:wrap;gap:2rem;
+}
+.processo-cta-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:300;
+  color:var(--creme);max-width:500px;line-height:1.45;
+}
+.processo-cta-text strong{font-style:normal;font-weight:500;color:var(--areia)}
+.btn-creme{
+  background:var(--creme);color:var(--musgo);
+  padding:.95rem 2.2rem;border:none;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:400;white-space:nowrap;transition:background .25s;
+}
+.btn-creme:hover{background:#e6e0d7}
+
+/* ── PAGE 5: DIAGNÓSTICO ── */
+#p-diagnostico{background:var(--creme)}
+.diag-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  padding:8rem 4rem 5rem;
+  display:flex;flex-direction:column;align-items:center;
+}
+.diag-intro{max-width:640px;width:100%;text-align:center;margin-bottom:2.5rem}
+.diag-intro .sec-rule{margin-left:auto;margin-right:auto}
+.diag-intro-desc{font-size:.85rem;color:#555;line-height:1.85;max-width:520px;margin:0 auto}
+
+.diag-card{
+  width:100%;max-width:640px;
+  background:#fff;border:1px solid rgba(47,59,42,.1);
+  padding:3rem;position:relative;
+}
+
+/* progress + blocos (metáfora do alicerce sendo construído) */
+.diag-progress-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2.2rem;gap:1.5rem;flex-wrap:wrap;
+}
+.diag-progress-label{
+  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--cinza-claro);font-weight:500;
+}
+.diag-blocks{display:flex;flex-direction:column-reverse;gap:4px;width:46px;flex-shrink:0}
+.diag-block{height:10px;background:rgba(47,59,42,.1);transition:background .5s ease}
+.diag-block.filled{background:var(--areia)}
+
+.diag-question{
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(1.4rem,3vw,1.9rem);
+  color:var(--musgo);line-height:1.3;margin-bottom:2rem;
+}
+.diag-options{display:flex;flex-direction:column;gap:.8rem}
+.diag-option{
+  text-align:left;width:100%;
+  background:var(--creme);border:1px solid rgba(47,59,42,.14);
+  padding:1.1rem 1.4rem;font-size:.82rem;color:var(--cinza);
+  font-weight:300;line-height:1.5;
+  transition:border-color .2s,background .2s;
+}
+.diag-option:hover{border-color:var(--musgo);background:#eee9e2}
+
+.diag-back{
+  margin-top:1.8rem;
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--cinza-claro);background:none;border:none;
+  opacity:.7;transition:opacity .2s;
+}
+.diag-back:hover{opacity:1}
+
+/* resultado */
+.diag-result{display:none}
+.diag-result.show{display:block}
+.diag-result-eyebrow{
+  font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--areia);font-weight:500;margin-bottom:.8rem;text-align:center;
+}
+.diag-result-title{
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  color:var(--musgo);text-align:center;line-height:1.15;margin-bottom:1.6rem;
+}
+.diag-result-title em{font-style:italic;font-weight:300;color:var(--petroleo)}
+.diag-result-blocks{
+  display:flex;flex-direction:column-reverse;gap:5px;
+  width:64px;margin:0 auto 1.8rem;
+}
+.diag-result-blocks .diag-block{height:13px}
+.diag-result-desc{
+  font-size:.85rem;color:#555;line-height:1.9;
+  max-width:480px;margin:0 auto 2.2rem;text-align:center;
+}
+.diag-result-rec{
+  background:var(--musgo);color:var(--creme);
+  padding:1.8rem 2rem;margin-bottom:2rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+}
+.diag-result-rec-label{
+  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--areia);margin-bottom:.4rem;
+}
+.diag-result-rec-name{font-family:var(--serif);font-size:1.25rem;font-weight:500}
+.diag-result-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+
+@media(max-width:1000px){
+  .diag-wrap{padding-top:6rem}
+  .diag-card{padding:2rem 1.6rem}
+}
+
+/* ── PAGE 5: CONTATO ── */
+#p-contato{background:var(--creme)}
+.contato-wrap{
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.contato-left{
+  background:var(--musgo);
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:8rem 4rem;
+  position:relative;overflow:hidden;
+}
+.contato-left-bg{
+  position:absolute;right:-60px;bottom:-40px;
+  width:320px;opacity:.05;
+}
+.contato-tag{
+  font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(201,167,124,.7);margin-bottom:1.2rem;font-weight:500;
+}
+.contato-title{
+  font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,3.8rem);
+  font-weight:500;color:var(--creme);line-height:1.1;
+  letter-spacing:-.01em;margin-bottom:1rem;
+}
+.contato-title em{font-style:italic;font-weight:300;color:var(--areia)}
+.contato-rule{width:40px;height:2px;background:var(--areia);margin-bottom:2rem}
+.contato-desc{
+  font-size:.82rem;color:rgba(245,241,235,.7);
+  line-height:1.85;max-width:340px;margin-bottom:2.5rem;font-weight:300;
+}
+.contato-links{display:flex;flex-direction:column;gap:1.2rem}
+.contato-link{
+  display:flex;align-items:center;gap:.9rem;
+  font-size:.7rem;letter-spacing:.08em;color:rgba(245,241,235,.6);
+  transition:color .2s;background:none;border:none;
+  text-align:left;font-family:var(--sans);
+}
+.contato-link:hover{color:var(--areia)}
+.contato-link svg{width:15px;height:15px;stroke:var(--areia);flex-shrink:0}
+
+.contato-right{
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:8rem 4rem;
+}
+.contato-right h3{
+  font-family:var(--serif);font-size:1.4rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:var(--musgo);margin-bottom:.4rem;
+}
+.contato-right p{font-size:.75rem;color:var(--cinza-claro);margin-bottom:2.2rem}
+
+.form-group{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.2rem}
+.form-group label{
+  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--cinza-claro);font-weight:400;
+}
+.form-group input,.form-group select,.form-group textarea{
+  background:#fff;border:1px solid rgba(47,59,42,.18);
+  color:var(--cinza);padding:.85rem 1rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:300;
+  outline:none;transition:border-color .2s;
+  -webkit-appearance:none;appearance:none;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--musgo)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-submit{
+  width:100%;padding:1rem;
+  background:var(--musgo);color:var(--creme);border:none;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:400;transition:background .25s;margin-top:.4rem;
+}
+.form-submit:hover{background:var(--petroleo)}
+.form-status{font-size:.72rem;margin-top:.8rem;min-height:1rem;letter-spacing:.03em}
+.form-status.ok{color:#5a7a50}
+.form-status.err{color:#8a4040}
+
+/* ── FOOTER STRIP ── */
+.footer-strip{
+  position:fixed;bottom:0;left:0;right:0;z-index:280;
+  display:flex;justify-content:space-between;
+  padding:.75rem 4rem;
+  font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cinza-claro);pointer-events:none;
+  border-top:1px solid rgba(47,59,42,.06);
+  background:rgba(245,241,235,.7);
+}
+.footer-strip.dark{color:rgba(245,241,235,.35);background:transparent;border-color:transparent}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){
+  nav{padding:1.2rem 2rem}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .mobile-menu{display:flex}
+  .home-wrap,.sobre-wrap,.contato-wrap{grid-template-columns:1fr}
+  .home-wrap{padding-top:6rem}
+  .home-right{height:55vw;max-height:380px;order:-1}
+  .home-right-inner{padding:2rem}
+  .home-left{padding:2rem 2rem 3rem}
+  .form-group input,.form-group select,.form-group textarea{font-size:16px}
+  .servicos-wrap,.processo-wrap{padding:5rem 2rem 3rem}
+  .servicos-grid{grid-template-columns:1fr}
+  .processo-intro{grid-template-columns:1fr;gap:1.5rem;margin-bottom:3rem}
+  .processo-steps{grid-template-columns:1fr 1fr}
+  .pstep{border-right:none;border-bottom:1px solid rgba(47,59,42,.08)}
+  .sobre-left,.sobre-right{padding:5rem 2rem 3rem}
+  .contato-left,.contato-right{padding:5rem 2rem}
+  .page-dots{display:none}
+  .footer-strip{display:none}
+  .processo-cta-block{padding:2rem}
+}
+@media(max-width:600px){
+  .processo-steps{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .home-actions{flex-direction:column;align-items:flex-start}
+  .btn-primary,.btn-ghost{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE TRANSITION OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-col"></div>
+  <div class="overlay-col"></div>
+  <div class="overlay-col"></div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo" onclick="goTo('home')">
+    <svg viewBox="0 0 52 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- A monogram: architectural triangle with descending curve to LICERCE baseline -->
+      <path d="M26 4 L44 36 H8 Z" fill="none" stroke="#2F3B2A" stroke-width="1.4" stroke-linejoin="round"/>
+    </svg>
+    <div class="nav-logo-text">
+      <span class="nav-logo-name">Alicerce Psi</span>
+      <span class="nav-logo-sub">Estrutura digital</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><button class="active" data-page="home" onclick="goTo('home')">Início</button></li>
+    <li><button data-page="servicos" onclick="goTo('servicos')">Serviços</button></li>
+    <li><button data-page="sobre" onclick="goTo('sobre')">Sobre</button></li>
+    <li><button data-page="processo" onclick="goTo('processo')">Processo</button></li>
+    <li><button data-page="diagnostico" onclick="goTo('diagnostico')">Diagnóstico</button></li>
+    <li><button class="nav-cta" onclick="goTo('contato')">Fale conosco</button></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="active" onclick="mobileGoTo('home')">Início</button>
+  <button onclick="mobileGoTo('servicos')">Serviços</button>
+  <button onclick="mobileGoTo('sobre')">Sobre</button>
+  <button onclick="mobileGoTo('processo')">Processo</button>
+  <button onclick="mobileGoTo('diagnostico')">Diagnóstico</button>
+  <button onclick="mobileGoTo('contato')">Contato</button>
+</div>
+
+<!-- PAGE DOTS -->
+<div class="page-dots">
+  <button class="dot active" onclick="goTo('home')" title="Início"></button>
+  <button class="dot" onclick="goTo('servicos')" title="Serviços"></button>
+  <button class="dot" onclick="goTo('sobre')" title="Sobre"></button>
+  <button class="dot" onclick="goTo('processo')" title="Processo"></button>
+  <button class="dot" onclick="goTo('diagnostico')" title="Diagnóstico"></button>
+  <button class="dot" onclick="goTo('contato')" title="Contato"></button>
+</div>
+
+<!-- FOOTER STRIP -->
+<div class="footer-strip" id="footerStrip">
+  <span>Serra Talhada · PE · Brasil</span>
+  <span>agenciaalicerceopsi@gmail.com</span>
+</div>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="p-home">
+  <div class="home-wrap">
+    <div class="home-left">
+      <p class="home-tag">Estrutura digital para psicólogos</p>
+      <h1 class="home-title">Cuidamos da estrutura,<br>você cuida das<br><em>pessoas.</em></h1>
+      <div class="home-rule"></div>
+      <p class="home-sub">Sites, automações e gestão para que o seu consultório funcione com mais clareza — e você tenha mais tempo para o que realmente importa: o paciente.</p>
+      <div class="home-actions">
+        <button class="btn-primary" onclick="goTo('servicos')">Ver serviços</button>
+        <button class="btn-ghost" onclick="goTo('contato')">Falar conosco</button>
+      </div>
+    </div>
+    <div class="home-right">
+      <div class="home-right-inner">
+        <svg class="mono-a" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 10 L180 165 H20 Z" fill="none" stroke="#F5F1EB" stroke-width="2" stroke-linejoin="round"/>
+          <text x="42" y="162" font-family="Cormorant Garamond, serif" font-size="14" fill="#F5F1EB" letter-spacing="8" font-weight="300" opacity="0.6">LICERCE</text>
+        </svg>
+        <p class="home-right-quote">"A estrutura liberta o cuidado."</p>
+        <p class="home-right-attr">Alicerce Psi — Consultoria Digital</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: SERVIÇOS ══ -->
+<div class="page" id="p-servicos">
+  <div class="servicos-wrap">
+    <p class="sec-eyebrow">O que oferecemos</p>
+    <h2 class="sec-title">Serviços para o<br><em>seu consultório</em></h2>
+    <div class="sec-rule"></div>
+
+    <div class="servicos-grid">
+      <div class="servico-card">
+        <div class="servico-num">01</div>
+        <h3 class="servico-title">Site Profissional</h3>
+        <p class="servico-desc">Seu consultório merece uma presença digital à altura do cuidado que você oferece. Criamos sites exclusivos, pensados para transmitir credibilidade e facilitar o primeiro contato do paciente.</p>
+        <ul class="servico-items">
+          <li>Design exclusivo alinhado à sua identidade</li>
+          <li>Formulário de triagem inicial integrado</li>
+          <li>Adaptado para celular, tablet e computador</li>
+          <li>Integração com WhatsApp e agendamento</li>
+        </ul>
+      </div>
+
+      <div class="servico-card">
+        <div class="servico-num">02</div>
+        <h3 class="servico-title">Automações</h3>
+        <p class="servico-desc">Menos tempo respondendo mensagens, confirmando sessões e cobrando manualmente. Configuramos fluxos automáticos que trabalham pelo consultório enquanto você está na sessão.</p>
+        <ul class="servico-items">
+          <li>Agendamento automático de sessões</li>
+          <li>Lembretes de consulta via WhatsApp</li>
+          <li>Formulário de pré-triagem automatizado</li>
+          <li>Fluxo de reengajamento ético para ausências</li>
+        </ul>
+      </div>
+
+      <div class="servico-card">
+        <div class="servico-num">03</div>
+        <h3 class="servico-title">Gestão do Consultório</h3>
+        <p class="servico-desc">Organização da operação administrativa do consultório — sem tocar na prática clínica. Controle financeiro claro, processos definidos e previsibilidade no mês.</p>
+        <ul class="servico-items">
+          <li>Painel financeiro automatizado</li>
+          <li>Controle de sessões e pagamentos</li>
+          <li>Política de cancelamento estruturada</li>
+          <li>Organização de agenda e calendário</li>
+        </ul>
+      </div>
+
+      <div class="servico-card">
+        <div class="servico-num">04</div>
+        <h3 class="servico-title">Capacitação Digital</h3>
+        <p class="servico-desc">Para quem quer aprender a operar suas próprias ferramentas. Treinamos o psicólogo no uso de agenda online, organização de conteúdo educativo ético e gestão do consultório no dia a dia.</p>
+        <ul class="servico-items">
+          <li>Google Workspace aplicado ao consultório</li>
+          <li>Ferramentas de agenda e automação</li>
+          <li>Conteúdo educativo ético para redes sociais</li>
+          <li>Organização de prontuário digital</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="servicos-note">Todos os serviços são adaptados à realidade e ao porte do consultório — nenhuma solução é genérica.</p>
+  </div>
+</div>
+
+<!-- ══ PAGE: SOBRE ══ -->
+<div class="page" id="p-sobre">
+  <div class="sobre-wrap">
+    <div class="sobre-left">
+      <svg class="sobre-bg-a" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 L180 165 H20 Z" fill="none" stroke="#F5F1EB" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <p class="sobre-tag">Quem está por trás</p>
+      <h2 class="sobre-title">Estrutura com<br><em>propósito</em>.</h2>
+      <div class="sobre-rule"></div>
+      <div class="sobre-desc">
+        <p>O Alicerce Psi nasceu de uma convicção simples: psicólogos não deveriam perder tempo com burocracia quando há pacientes precisando de cuidado.</p>
+        <p>Somos uma consultoria de estrutura digital especializada em consultórios de psicologia. Não atuamos na prática clínica — atuamos na estrutura administrativa e tecnológica ao redor dela, para que o profissional tenha mais clareza, mais tempo e mais previsibilidade.</p>
+        <p>Gerenciado pela Ester Carvalho Consultoria, com atendimento 100% remoto para todo o Brasil.</p>
+      </div>
+      <div class="sobre-values">
+        <span class="sobre-value">Ética</span>
+        <span class="sobre-value">Sobriedade</span>
+        <span class="sobre-value">Profissionalismo</span>
+      </div>
+    </div>
+    <div class="sobre-right">
+      <p class="sobre-missao">Nossa missão</p>
+      <blockquote class="sobre-quote">"Cuidamos da estrutura, você cuida das pessoas."</blockquote>
+      <ul class="sobre-lista">
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
+          Não comercializamos saúde mental — apenas a estrutura técnica e administrativa ao redor da prática clínica.
+        </li>
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
+          Nunca usamos linguagem de "vendas" ou "leads" — o vocabulário respeita a singularidade da profissão.
+        </li>
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
+          Cada solução é personalizada — nenhum consultório tem a mesma estrutura que outro.
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: PROCESSO ══ -->
+<div class="page" id="p-processo">
+  <div class="processo-wrap">
+    <div class="processo-intro">
+      <div>
+        <p class="sec-eyebrow">Como trabalhamos</p>
+        <h2 class="sec-title">Do primeiro contato<br>à <em>entrega</em></h2>
+        <div class="sec-rule"></div>
+      </div>
+      <div class="processo-intro-right">
+        Cada projeto começa com uma conversa real. Só depois de entender a rotina, os desafios e os objetivos do consultório, apresentamos uma proposta. Nada de pacote genérico entregue sem escuta.
+      </div>
+    </div>
+
+    <div class="processo-steps">
+      <div class="pstep">
+        <div class="pstep-num">1</div>
+        <div class="pstep-name">Conversa</div>
+        <p class="pstep-desc">Ouvimos com calma o que já existe, o que falta e onde você quer chegar.</p>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">2</div>
+        <div class="pstep-name">Diagnóstico</div>
+        <p class="pstep-desc">Mapeamos o que existe, o que falta e o que pode ser melhorado na estrutura digital.</p>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">3</div>
+        <div class="pstep-name">Proposta</div>
+        <p class="pstep-desc">Apresentamos um plano específico para a realidade do consultório — com prazo e valores claros.</p>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">4</div>
+        <div class="pstep-name">Execução</div>
+        <p class="pstep-desc">Construímos, configuramos e testamos cada parte da estrutura com acompanhamento próximo.</p>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">5</div>
+        <div class="pstep-name">Continuidade</div>
+        <p class="pstep-desc">Ajustes, atualizações e suporte — para que a estrutura continue funcionando no dia a dia.</p>
+      </div>
+    </div>
+
+    <div class="processo-cta-block">
+      <p class="processo-cta-text">A primeira conversa é <strong>sem compromisso</strong> — só para ver se faz sentido trabalharmos juntos.</p>
+      <button class="btn-creme" onclick="goTo('contato')">Agendar conversa</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: DIAGNÓSTICO ══ -->
+<div class="page" id="p-diagnostico">
+  <div class="diag-wrap">
+    <div class="diag-intro">
+      <p class="sec-eyebrow" style="text-align:center">Diagnóstico gratuito</p>
+      <h2 class="sec-title">A estrutura do seu<br><em>consultório</em> está de pé?</h2>
+      <div class="sec-rule"></div>
+      <p class="diag-intro-desc">Responda 5 perguntas rápidas sobre a rotina administrativa do consultório e veja, na hora, onde a estrutura está sólida — e onde vale reforçar.</p>
+    </div>
+
+    <div class="diag-card">
+      <!-- QUIZ -->
+      <div id="diagQuiz">
+        <div class="diag-progress-row">
+          <span class="diag-progress-label" id="diagProgress">Pergunta 1 de 5</span>
+          <div class="diag-blocks" id="diagBlocksLive">
+            <div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div>
+          </div>
+        </div>
+        <h3 class="diag-question" id="diagQuestion"></h3>
+        <div class="diag-options" id="diagOptions"></div>
+        <button class="diag-back" id="diagBackBtn" onclick="diagBack()">← Voltar</button>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="diag-result" id="diagResult">
+        <p class="diag-result-eyebrow">Seu diagnóstico</p>
+        <h3 class="diag-result-title" id="diagResultTitle"></h3>
+        <div class="diag-result-blocks" id="diagResultBlocks">
+          <div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div>
+        </div>
+        <p class="diag-result-desc" id="diagResultDesc"></p>
+        <div class="diag-result-rec">
+          <div>
+            <div class="diag-result-rec-label">Ponto de maior impacto agora</div>
+            <div class="diag-result-rec-name" id="diagResultRec"></div>
+          </div>
+          <button class="btn-creme" onclick="goTo('servicos')">Ver serviço</button>
+        </div>
+        <div class="diag-result-actions">
+          <button class="btn-primary" onclick="goTo('contato')">Falar sobre meu resultado</button>
+          <button class="btn-ghost" onclick="diagRestart()">Refazer diagnóstico</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: CONTATO ══ -->
+<div class="page" id="p-contato">
+  <div class="contato-wrap">
+    <div class="contato-left">
+      <svg class="contato-left-bg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 10 L180 165 H20 Z" fill="none" stroke="#F5F1EB" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <p class="contato-tag">Fale conosco</p>
+      <h2 class="contato-title">Vamos<br><em>conversar?</em></h2>
+      <div class="contato-rule"></div>
+      <p class="contato-desc">Escolha o canal que preferir — WhatsApp, e-mail ou o formulário ao lado.</p>
+      <div class="contato-links">
+        <button class="contato-link" onclick="window.open('https://wa.me/5587991737358','_blank')">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          (87) 99173-7358
+        </button>
+        <button class="contato-link" onclick="window.open('mailto:agenciaalicerceopsi@gmail.com','_blank')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          agenciaalicerceopsi@gmail.com
+        </button>
+        <button class="contato-link" onclick="window.open('https://instagram.com/alicercepsi','_blank')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+          @alicercepsi
+        </button>
+      </div>
+    </div>
+    <div class="contato-right">
+      <h3>Solicitar conversa</h3>
+      <p>Preencha e entraremos em contato em até 24h.</p>
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome</label>
+            <input type="text" name="nome" required placeholder="Seu nome">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="tel" name="whatsapp" placeholder="(00) 00000-0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" required placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label>Interesse</label>
+          <select name="interesse">
+            <option value="">Selecione um serviço</option>
+            <option>Site profissional</option>
+            <option>Automações</option>
+            <option>Gestão do consultório</option>
+            <option>Capacitação digital</option>
+            <option>Ainda tenho dúvidas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensagem (opcional)</label>
+          <textarea name="mensagem" placeholder="Conte um pouco sobre o seu consultório..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Enviar mensagem</button>
+        <p class="form-status" id="formStatus"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PAGES ──
+const PAGES = ['home','servicos','sobre','processo','diagnostico','contato'];
+let current = 'home';
+let transitioning = false;
+
+function goTo(id) {
+  if (id === current || transitioning) return;
+  transitioning = true;
+  const ov = document.getElementById('overlay');
+  ov.className = 'overlay in';
+  setTimeout(() => {
+    document.getElementById('p-' + current).classList.remove('active');
+    document.getElementById('p-' + id).classList.add('active');
+    current = id;
+    updateNav();
+    ov.className = 'overlay out';
+    setTimeout(() => { ov.className = 'overlay'; transitioning = false; }, 600);
+  }, 600);
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-links button[data-page]').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === current);
+  });
+  document.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('active', PAGES[i] === current);
+  });
+  const strip = document.getElementById('footerStrip');
+  strip.classList.toggle('dark', current === 'sobre' || current === 'contato');
+}
+
+// ── HAMBURGER ──
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function mobileGoTo(id) {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.querySelectorAll('.mobile-menu button').forEach(b => b.classList.remove('active'));
+  goTo(id);
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  const i = PAGES.indexOf(current);
+  if (e.key==='ArrowDown'||e.key==='ArrowRight') goTo(PAGES[Math.min(i+1,PAGES.length-1)]);
+  if (e.key==='ArrowUp'||e.key==='ArrowLeft') goTo(PAGES[Math.max(i-1,0)]);
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; },{passive:true});
+document.addEventListener('touchend', e => {
+  const d = tx - e.changedTouches[0].clientX;
+  const i = PAGES.indexOf(current);
+  if (d > 60) goTo(PAGES[Math.min(i+1,PAGES.length-1)]);
+  if (d < -60) goTo(PAGES[Math.max(i-1,0)]);
+},{passive:true});
+
+// ── DIAGNÓSTICO ──
+const DIAG_QUESTIONS = [
+  {
+    q: 'Como está a presença digital do consultório hoje?',
+    cat: 'site',
+    opts: [
+      { t: 'Não tenho site, ou é bem simples e desatualizado', v: 0 },
+      { t: 'Tenho um site, mas ele não traz contato nenhum', v: 1 },
+      { t: 'Tenho um site atualizado que já gera procura', v: 2 },
+    ]
+  },
+  {
+    q: 'Como funciona o agendamento e a confirmação de sessões?',
+    cat: 'automacoes',
+    opts: [
+      { t: 'Agendo e confirmo tudo manualmente pelo WhatsApp', v: 0 },
+      { t: 'Uso alguma ferramenta, mas ainda faço parte manual', v: 1 },
+      { t: 'Agendamento e lembretes acontecem sozinhos', v: 2 },
+    ]
+  },
+  {
+    q: 'Como está o controle financeiro do consultório?',
+    cat: 'gestao',
+    opts: [
+      { t: 'Não tenho um controle financeiro estruturado', v: 0 },
+      { t: 'Controlo em planilha ou caderno, sem muita previsibilidade', v: 1 },
+      { t: 'Tenho um painel claro — sei exatamente quanto entra', v: 2 },
+    ]
+  },
+  {
+    q: 'E as faltas e cancelamentos de última hora?',
+    cat: 'gestao',
+    opts: [
+      { t: 'Me pegam de surpresa e bagunçam a agenda', v: 0 },
+      { t: 'Tenho uma política, mas nem sempre é seguida', v: 1 },
+      { t: 'Tenho uma política clara e ela funciona', v: 2 },
+    ]
+  },
+  {
+    q: 'Qual sua relação com as ferramentas digitais do dia a dia?',
+    cat: 'capacitacao',
+    opts: [
+      { t: 'Dependo de alguém — ou travo sozinho(a) no susto', v: 0 },
+      { t: 'Sei o básico, mas me perco em várias coisas', v: 1 },
+      { t: 'Me sinto segura(o) usando as ferramentas do consultório', v: 2 },
+    ]
+  },
+];
+
+const DIAG_SERVICES = {
+  site: 'Site Profissional',
+  automacoes: 'Automações',
+  gestao: 'Gestão do Consultório',
+  capacitacao: 'Capacitação Digital',
+};
+
+let diagStep = 0;
+let diagAnswers = [];
+
+function diagRenderBlocks(container, filledCount) {
+  const blocks = container.querySelectorAll('.diag-block');
+  blocks.forEach((b, i) => b.classList.toggle('filled', i < filledCount));
+}
+
+function diagRenderQuestion() {
+  const item = DIAG_QUESTIONS[diagStep];
+  document.getElementById('diagProgress').textContent = `Pergunta ${diagStep + 1} de ${DIAG_QUESTIONS.length}`;
+  document.getElementById('diagQuestion').textContent = item.q;
+  const optsWrap = document.getElementById('diagOptions');
+  optsWrap.innerHTML = '';
+  item.opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'diag-option';
+    btn.textContent = opt.t;
+    btn.onclick = () => diagAnswer(opt.v);
+    optsWrap.appendChild(btn);
+  });
+  document.getElementById('diagBackBtn').style.visibility = diagStep === 0 ? 'hidden' : 'visible';
+  const scoreSoFar = diagAnswers.reduce((s, a) => s + (a ? a.v : 0), 0);
+  diagRenderBlocks(document.getElementById('diagBlocksLive'), Math.round(scoreSoFar / 2));
+}
+
+function diagAnswer(value) {
+  diagAnswers[diagStep] = { v: value, cat: DIAG_QUESTIONS[diagStep].cat };
+  if (diagStep < DIAG_QUESTIONS.length - 1) {
+    diagStep++;
+    diagRenderQuestion();
+  } else {
+    diagShowResult();
+  }
+}
+
+function diagBack() {
+  if (diagStep === 0) return;
+  diagStep--;
+  diagRenderQuestion();
+}
+
+function diagShowResult() {
+  const total = diagAnswers.reduce((s, a) => s + a.v, 0);
+  const max = DIAG_QUESTIONS.length * 2;
+
+  let title, desc;
+  if (total <= Math.round(max * 0.35)) {
+    title = 'A fundação ainda <em>precisa ser levantada</em>';
+    desc = 'Boa parte da estrutura administrativa hoje depende de esforço manual e improviso. Isso é comum — e totalmente reversível. Com alguns ajustes pontuais, o consultório ganha previsibilidade rápido.';
+  } else if (total <= Math.round(max * 0.7)) {
+    title = 'Existe uma <em>base</em>, mas com pontos frágeis';
+    desc = 'O consultório já tem parte da estrutura funcionando, mas ainda há retrabalho e furos que consomem seu tempo. Reforçar esses pontos específicos já faz bastante diferença no dia a dia.';
+  } else {
+    title = 'A estrutura está <em>sólida</em>';
+    desc = 'O consultório já opera com bastante clareza. Os ajustes que restam são de refinamento — deixar tudo ainda mais automático e liberar o pouco tempo manual que resta.';
+  }
+
+  // categoria com menor média = maior prioridade de reforço
+  const catTotals = {};
+  const catCounts = {};
+  diagAnswers.forEach(a => {
+    catTotals[a.cat] = (catTotals[a.cat] || 0) + a.v;
+    catCounts[a.cat] = (catCounts[a.cat] || 0) + 1;
+  });
+  let lowestCat = null, lowestAvg = Infinity;
+  Object.keys(catTotals).forEach(cat => {
+    const avg = catTotals[cat] / catCounts[cat];
+    if (avg < lowestAvg) { lowestAvg = avg; lowestCat = cat; }
+  });
+
+  document.getElementById('diagResultTitle').innerHTML = title;
+  document.getElementById('diagResultDesc').textContent = desc;
+  document.getElementById('diagResultRec').textContent = DIAG_SERVICES[lowestCat];
+  diagRenderBlocks(document.getElementById('diagResultBlocks'), Math.round(total / 2));
+
+  document.getElementById('diagQuiz').style.display = 'none';
+  document.getElementById('diagResult').classList.add('show');
+}
+
+function diagRestart() {
+  diagStep = 0;
+  diagAnswers = [];
+  document.getElementById('diagResult').classList.remove('show');
+  document.getElementById('diagQuiz').style.display = 'block';
+  diagRenderQuestion();
+}
+
+diagRenderQuestion();
+
+// ── FORM ──
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  const status = document.getElementById('formStatus');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  const data = Object.fromEntries(new FormData(this));
+  data._subject = 'Alicerce Psi — Nova solicitação de contato';
+  try {
+    const r = await fetch('https://formspree.io/f/xnjkrblq', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(data)
+    });
+    if (r.ok) {
+      status.textContent = '✓ Mensagem recebida. Entraremos em contato em breve.';
+      status.className = 'form-status ok';
+      this.reset();
+    } else throw new Error();
+  } catch {
+    status.textContent = 'Não foi possível enviar. Chame no WhatsApp: (87) 99173-7358';
+    status.className = 'form-status err';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar mensagem';
+  }
+});
+</script>
+</body>
+</html>
