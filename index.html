@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
-<title>Diagnóstico gratuito — Alicerce Psi</title>
+<title>Site Profissional — Alicerce Psi</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="favicon-256.png" sizes="256x256">
 <link rel="apple-touch-icon" href="favicon-256.png">
@@ -27,11 +27,9 @@ a{text-decoration:none}
   --sans:'Inter',sans-serif;
 }
 
-/* ── TOPO ── */
 .topbar{
   display:flex;justify-content:space-between;align-items:center;
-  padding:1.5rem 4rem;
-  border-bottom:1px solid rgba(47,59,42,.08);
+  padding:1.5rem 4rem;border-bottom:1px solid rgba(47,59,42,.08);
 }
 .topbar-logo{display:flex;align-items:center;gap:.9rem;color:inherit}
 .topbar-logo svg{width:34px;height:26px;flex-shrink:0}
@@ -50,114 +48,46 @@ a{text-decoration:none}
 }
 .topbar-back:hover{opacity:1}
 
-/* ── DIAGNÓSTICO ── */
-.diag-wrap{
-  min-height:calc(100vh - 74px);
-  min-height:calc(100dvh - 74px);
-  padding:5rem 2rem 5rem;
-  display:flex;flex-direction:column;align-items:center;
-}
-.diag-intro{max-width:640px;width:100%;text-align:center;margin-bottom:2.5rem}
-.diag-eyebrow{
+.serv-wrap{max-width:760px;margin:0 auto;padding:5rem 2rem 6rem}
+.serv-eyebrow{
   font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
   color:var(--areia);margin-bottom:.9rem;font-weight:500;
 }
-.diag-title{
+.serv-title{
   font-family:var(--serif);font-weight:500;
-  font-size:clamp(2rem,5vw,3.2rem);
-  line-height:1.15;color:var(--musgo);margin-bottom:1rem;letter-spacing:-.01em;
+  font-size:clamp(2.1rem,5vw,3.4rem);
+  line-height:1.1;color:var(--musgo);margin-bottom:1.4rem;letter-spacing:-.01em;
 }
-.diag-title em{font-style:italic;font-weight:300;color:var(--petroleo)}
-.diag-rule{width:40px;height:2px;background:var(--areia);margin:0 auto 1.6rem}
-.diag-intro-desc{font-size:.85rem;color:#555;line-height:1.85;max-width:520px;margin:0 auto}
+.serv-rule{width:40px;height:2px;background:var(--areia);margin-bottom:2rem}
+.serv-lead{font-size:.95rem;color:#444;line-height:1.9;max-width:600px;margin-bottom:3rem}
 
-.diag-card{
-  width:100%;max-width:640px;
-  background:#fff;border:1px solid rgba(47,59,42,.1);
-  padding:3rem;position:relative;
-}
-
-.diag-progress-row{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:2.2rem;gap:1.5rem;flex-wrap:wrap;
-}
-.diag-progress-label{
+.serv-section-label{
   font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--cinza-claro);font-weight:500;
+  color:var(--cinza-claro);font-weight:500;margin-bottom:1.2rem;
 }
-.diag-blocks{display:flex;flex-direction:column-reverse;gap:4px;width:46px;flex-shrink:0}
-.diag-block{height:10px;background:rgba(47,59,42,.1);transition:background .5s ease}
-.diag-block.filled{background:var(--areia)}
+.serv-items{list-style:none;margin-bottom:3rem}
+.serv-items li{
+  font-size:.85rem;color:#555;padding:.9rem 0;line-height:1.6;
+  border-bottom:1px solid rgba(47,59,42,.09);
+  display:flex;align-items:baseline;gap:.8rem;
+}
+.serv-items li::before{content:'—';color:var(--areia);flex-shrink:0}
 
-.diag-question{
-  font-family:var(--serif);font-weight:500;
-  font-size:clamp(1.4rem,3vw,1.9rem);
-  color:var(--musgo);line-height:1.3;margin-bottom:2rem;
+.serv-forwho{
+  background:#fff;border:1px solid rgba(47,59,42,.1);
+  padding:2.2rem 2.4rem;margin-bottom:3rem;font-size:.85rem;color:#555;line-height:1.85;
 }
-.diag-options{display:flex;flex-direction:column;gap:.8rem}
-.diag-option{
-  text-align:left;width:100%;
-  background:var(--creme);border:1px solid rgba(47,59,42,.14);
-  padding:1.1rem 1.4rem;font-size:.82rem;color:var(--cinza);
-  font-weight:300;line-height:1.5;
-  transition:border-color .2s,background .2s;
-}
-.diag-option:hover{border-color:var(--musgo);background:#eee9e2}
+.serv-forwho strong{color:var(--musgo);font-weight:500}
 
-.diag-back{
-  margin-top:1.8rem;
-  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--cinza-claro);background:none;border:none;
-  opacity:.7;transition:opacity .2s;
-}
-.diag-back:hover{opacity:1}
-
-.diag-result{display:none}
-.diag-result.show{display:block}
-.diag-result-eyebrow{
-  font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;
-  color:var(--areia);font-weight:500;margin-bottom:.8rem;text-align:center;
-}
-.diag-result-title{
-  font-family:var(--serif);font-weight:500;
-  font-size:clamp(1.7rem,4vw,2.5rem);
-  color:var(--musgo);text-align:center;line-height:1.15;margin-bottom:1.6rem;
-}
-.diag-result-title em{font-style:italic;font-weight:300;color:var(--petroleo)}
-.diag-result-blocks{
-  display:flex;flex-direction:column-reverse;gap:5px;
-  width:64px;margin:0 auto 1.8rem;
-}
-.diag-result-blocks .diag-block{height:13px}
-.diag-result-desc{
-  font-size:.85rem;color:#555;line-height:1.9;
-  max-width:480px;margin:0 auto 2.2rem;text-align:center;
-}
-.diag-result-rec{
+.serv-cta{
   background:var(--musgo);color:var(--creme);
-  padding:1.8rem 2rem;margin-bottom:2rem;
-  display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+  padding:2.4rem 2.6rem;display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;flex-wrap:wrap;
 }
-.diag-result-rec-label{
-  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--areia);margin-bottom:.4rem;
+.serv-cta-text{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:clamp(1.1rem,2.5vw,1.5rem);max-width:420px;line-height:1.5;
 }
-.diag-result-rec-name{font-family:var(--serif);font-size:1.25rem;font-weight:500}
-.diag-result-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
-
-.btn-primary{
-  background:var(--musgo);color:var(--creme);
-  padding:.95rem 2.2rem;border:none;
-  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
-  font-weight:400;transition:background .25s;
-}
-.btn-primary:hover{background:var(--petroleo)}
-.btn-ghost{
-  background:none;border:1px solid rgba(47,59,42,.3);color:var(--musgo);
-  padding:.95rem 2.2rem;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
-  font-weight:400;transition:border-color .25s,color .25s;
-}
-.btn-ghost:hover{border-color:var(--musgo)}
 .btn-creme{
   background:var(--creme);color:var(--musgo);
   padding:.95rem 2.2rem;border:none;
@@ -166,7 +96,7 @@ a{text-decoration:none}
 }
 .btn-creme:hover{background:#e6e0d7}
 
-.diag-footer{
+.serv-footer{
   text-align:center;padding:2rem;
   font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;
   color:var(--cinza-claro);
@@ -174,7 +104,8 @@ a{text-decoration:none}
 
 @media(max-width:700px){
   .topbar{padding:1.2rem 1.5rem}
-  .diag-card{padding:2rem 1.5rem}
+  .serv-wrap{padding:3rem 1.5rem 4rem}
+  .serv-cta{padding:1.8rem}
 }
 </style>
 </head>
@@ -193,205 +124,31 @@ a{text-decoration:none}
   <a class="topbar-back" href="index.html">← Voltar ao site</a>
 </div>
 
-<div class="diag-wrap">
-  <div class="diag-intro">
-    <p class="diag-eyebrow">Diagnóstico gratuito</p>
-    <h1 class="diag-title">A estrutura do seu<br><em>consultório</em> está de pé?</h1>
-    <div class="diag-rule"></div>
-    <p class="diag-intro-desc">Responda 5 perguntas rápidas sobre a rotina administrativa do consultório e veja, na hora, onde a estrutura está sólida — e onde vale reforçar.</p>
+<div class="serv-wrap">
+  <p class="serv-eyebrow">Serviço recomendado para você</p>
+  <h1 class="serv-title">Site Profissional</h1>
+  <div class="serv-rule"></div>
+  <p class="serv-lead">Seu consultório merece uma presença digital à altura do cuidado que você oferece. Criamos sites exclusivos, pensados para transmitir credibilidade e facilitar o primeiro contato do paciente.</p>
+
+  <p class="serv-section-label">O que está incluso</p>
+  <ul class="serv-items">
+    <li>Design exclusivo alinhado à sua identidade</li>
+    <li>Formulário de triagem inicial integrado</li>
+    <li>Adaptado para celular, tablet e computador</li>
+    <li>Integração com WhatsApp e agendamento</li>
+  </ul>
+
+  <div class="serv-forwho">
+    <strong>Para quem é:</strong> psicólogos que ainda não têm site, ou têm um site que não passa credibilidade nem gera contato de pacientes novos.
   </div>
 
-  <div class="diag-card">
-    <!-- QUIZ -->
-    <div id="diagQuiz">
-      <div class="diag-progress-row">
-        <span class="diag-progress-label" id="diagProgress">Pergunta 1 de 5</span>
-        <div class="diag-blocks" id="diagBlocksLive">
-          <div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div>
-        </div>
-      </div>
-      <h2 class="diag-question" id="diagQuestion"></h2>
-      <div class="diag-options" id="diagOptions"></div>
-      <button class="diag-back" id="diagBackBtn" onclick="diagBack()">← Voltar</button>
-    </div>
-
-    <!-- RESULTADO -->
-    <div class="diag-result" id="diagResult">
-      <p class="diag-result-eyebrow">Seu diagnóstico</p>
-      <h2 class="diag-result-title" id="diagResultTitle"></h2>
-      <div class="diag-result-blocks" id="diagResultBlocks">
-        <div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div><div class="diag-block"></div>
-      </div>
-      <p class="diag-result-desc" id="diagResultDesc"></p>
-      <div class="diag-result-rec">
-        <div>
-          <div class="diag-result-rec-label">Ponto de maior impacto agora</div>
-          <div class="diag-result-rec-name" id="diagResultRec"></div>
-        </div>
-        <a class="btn-creme" id="diagResultCta" href="#" target="_blank" rel="noopener">Ver serviço</a>
-      </div>
-      <div class="diag-result-actions">
-        <a class="btn-primary" href="https://wa.me/5587991737358" target="_blank">Falar sobre meu resultado</a>
-        <button class="btn-ghost" onclick="diagRestart()">Refazer diagnóstico</button>
-      </div>
-    </div>
+  <div class="serv-cta">
+    <p class="serv-cta-text">"Um site bem-feito trabalha por você mesmo quando o consultório está fechado."</p>
+    <a class="btn-creme" href="https://wa.me/5587991737358" target="_blank">Falar sobre este serviço</a>
   </div>
 </div>
 
-<div class="diag-footer">Alicerce Psi — Serra Talhada · PE · Brasil</div>
+<div class="serv-footer">Alicerce Psi — Serra Talhada · PE · Brasil</div>
 
-<script>
-const DIAG_QUESTIONS = [
-  {
-    q: 'Como está a presença digital do consultório hoje?',
-    cat: 'site',
-    opts: [
-      { t: 'Não tenho site, ou é bem simples e desatualizado', v: 0 },
-      { t: 'Tenho um site, mas ele não traz contato nenhum', v: 1 },
-      { t: 'Tenho um site atualizado que já gera procura', v: 2 },
-    ]
-  },
-  {
-    q: 'Como funciona o agendamento e a confirmação de sessões?',
-    cat: 'automacoes',
-    opts: [
-      { t: 'Agendo e confirmo tudo manualmente pelo WhatsApp', v: 0 },
-      { t: 'Uso alguma ferramenta, mas ainda faço parte manual', v: 1 },
-      { t: 'Agendamento e lembretes acontecem sozinhos', v: 2 },
-    ]
-  },
-  {
-    q: 'Como está o controle financeiro do consultório?',
-    cat: 'gestao',
-    opts: [
-      { t: 'Não tenho um controle financeiro estruturado', v: 0 },
-      { t: 'Controlo em planilha ou caderno, sem muita previsibilidade', v: 1 },
-      { t: 'Tenho um painel claro — sei exatamente quanto entra', v: 2 },
-    ]
-  },
-  {
-    q: 'E as faltas e cancelamentos de última hora?',
-    cat: 'gestao',
-    opts: [
-      { t: 'Me pegam de surpresa e bagunçam a agenda', v: 0 },
-      { t: 'Tenho uma política, mas nem sempre é seguida', v: 1 },
-      { t: 'Tenho uma política clara e ela funciona', v: 2 },
-    ]
-  },
-  {
-    q: 'Qual sua relação com as ferramentas digitais do dia a dia?',
-    cat: 'capacitacao',
-    opts: [
-      { t: 'Dependo de alguém — ou travo sozinho(a) no susto', v: 0 },
-      { t: 'Sei o básico, mas me perco em várias coisas', v: 1 },
-      { t: 'Me sinto segura(o) usando as ferramentas do consultório', v: 2 },
-    ]
-  },
-];
-
-const DIAG_SERVICES = {
-  site: 'Site Profissional',
-  automacoes: 'Automações',
-  gestao: 'Gestão do Consultório',
-  capacitacao: 'Capacitação Digital',
-};
-
-const DIAG_SERVICE_PAGES = {
-  site: 'servico-site-profissional.html',
-  automacoes: 'servico-automacoes.html',
-  gestao: 'servico-gestao-consultorio.html',
-  capacitacao: 'servico-capacitacao-digital.html',
-};
-
-let diagStep = 0;
-let diagAnswers = [];
-
-function diagRenderBlocks(container, filledCount) {
-  const blocks = container.querySelectorAll('.diag-block');
-  blocks.forEach((b, i) => b.classList.toggle('filled', i < filledCount));
-}
-
-function diagRenderQuestion() {
-  const item = DIAG_QUESTIONS[diagStep];
-  document.getElementById('diagProgress').textContent = `Pergunta ${diagStep + 1} de ${DIAG_QUESTIONS.length}`;
-  document.getElementById('diagQuestion').textContent = item.q;
-  const optsWrap = document.getElementById('diagOptions');
-  optsWrap.innerHTML = '';
-  item.opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'diag-option';
-    btn.textContent = opt.t;
-    btn.onclick = () => diagAnswer(opt.v);
-    optsWrap.appendChild(btn);
-  });
-  document.getElementById('diagBackBtn').style.visibility = diagStep === 0 ? 'hidden' : 'visible';
-  const scoreSoFar = diagAnswers.reduce((s, a) => s + (a ? a.v : 0), 0);
-  diagRenderBlocks(document.getElementById('diagBlocksLive'), Math.round(scoreSoFar / 2));
-}
-
-function diagAnswer(value) {
-  diagAnswers[diagStep] = { v: value, cat: DIAG_QUESTIONS[diagStep].cat };
-  if (diagStep < DIAG_QUESTIONS.length - 1) {
-    diagStep++;
-    diagRenderQuestion();
-  } else {
-    diagShowResult();
-  }
-}
-
-function diagBack() {
-  if (diagStep === 0) return;
-  diagStep--;
-  diagRenderQuestion();
-}
-
-function diagShowResult() {
-  const total = diagAnswers.reduce((s, a) => s + a.v, 0);
-  const max = DIAG_QUESTIONS.length * 2;
-
-  let title, desc;
-  if (total <= Math.round(max * 0.35)) {
-    title = 'A fundação ainda <em>precisa ser levantada</em>';
-    desc = 'Boa parte da estrutura administrativa hoje depende de esforço manual e improviso. Isso é comum — e totalmente reversível. Com alguns ajustes pontuais, o consultório ganha previsibilidade rápido.';
-  } else if (total <= Math.round(max * 0.7)) {
-    title = 'Existe uma <em>base</em>, mas com pontos frágeis';
-    desc = 'O consultório já tem parte da estrutura funcionando, mas ainda há retrabalho e furos que consomem seu tempo. Reforçar esses pontos específicos já faz bastante diferença no dia a dia.';
-  } else {
-    title = 'A estrutura está <em>sólida</em>';
-    desc = 'O consultório já opera com bastante clareza. Os ajustes que restam são de refinamento — deixar tudo ainda mais automático e liberar o pouco tempo manual que resta.';
-  }
-
-  const catTotals = {};
-  const catCounts = {};
-  diagAnswers.forEach(a => {
-    catTotals[a.cat] = (catTotals[a.cat] || 0) + a.v;
-    catCounts[a.cat] = (catCounts[a.cat] || 0) + 1;
-  });
-  let lowestCat = null, lowestAvg = Infinity;
-  Object.keys(catTotals).forEach(cat => {
-    const avg = catTotals[cat] / catCounts[cat];
-    if (avg < lowestAvg) { lowestAvg = avg; lowestCat = cat; }
-  });
-
-  document.getElementById('diagResultTitle').innerHTML = title;
-  document.getElementById('diagResultDesc').textContent = desc;
-  document.getElementById('diagResultRec').textContent = DIAG_SERVICES[lowestCat];
-  document.getElementById('diagResultCta').href = DIAG_SERVICE_PAGES[lowestCat];
-  diagRenderBlocks(document.getElementById('diagResultBlocks'), Math.round(total / 2));
-
-  document.getElementById('diagQuiz').style.display = 'none';
-  document.getElementById('diagResult').classList.add('show');
-}
-
-function diagRestart() {
-  diagStep = 0;
-  diagAnswers = [];
-  document.getElementById('diagResult').classList.remove('show');
-  document.getElementById('diagQuiz').style.display = 'block';
-  diagRenderQuestion();
-}
-
-diagRenderQuestion();
-</script>
 </body>
 </html>
